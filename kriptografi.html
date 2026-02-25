@@ -9,9 +9,6 @@
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet" />
     <style>
-        /* =============================================
-       VARIABEL WARNA & TEMA
-    ============================================= */
         :root {
             --bg: #fdf6ff;
             --panel: #ffffff;
@@ -36,7 +33,6 @@
             min-height: 100vh;
         }
 
-        /* Latar blob pastel dekoratif */
         body::before {
             content: '';
             position: fixed;
@@ -69,9 +65,6 @@
             padding: 24px 20px;
         }
 
-        /* =============================================
-       HEADER
-    ============================================= */
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -104,9 +97,6 @@
             font-weight: 600;
         }
 
-        /* =============================================
-       TAB NAVIGASI
-    ============================================= */
         .cipher-tabs {
             display: flex;
             gap: 4px;
@@ -145,9 +135,6 @@
             box-shadow: 0 -4px 16px rgba(192, 132, 252, 0.15);
         }
 
-        /* =============================================
-       PANEL KONTEN
-    ============================================= */
         .panel {
             background: var(--panel);
             border: 2px solid var(--border);
@@ -176,9 +163,6 @@
             border-bottom: 1.5px dashed var(--border);
         }
 
-        /* =============================================
-       FORM INPUT
-    ============================================= */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -237,9 +221,6 @@
             min-height: 80px;
         }
 
-        /* =============================================
-       TOMBOL AKSI
-    ============================================= */
         .btn-row {
             display: flex;
             gap: 10px;
@@ -296,9 +277,6 @@
             background: rgba(253, 164, 175, 0.1);
         }
 
-        /* =============================================
-       KOTAK OUTPUT HASIL
-    ============================================= */
         .output-box {
             background: #faf5ff;
             border: 1.5px solid var(--border);
@@ -329,9 +307,6 @@
             color: #9333ea;
         }
 
-        /* =============================================
-       PESAN ERROR
-    ============================================= */
         .error {
             color: #e11d48;
             font-family: 'DM Mono', monospace;
@@ -363,17 +338,11 @@
 <body>
     <div class="container">
 
-        <!-- =============================================
-       HEADER
-  ============================================= -->
         <header>
             <h1>Kriptografi Klasik</h1>
             <div class="subtitle">Enkripsi &amp; Dekripsi · Web Based Calculator</div>
         </header>
 
-        <!-- =============================================
-       TAB NAVIGASI
-  ============================================= -->
         <div class="cipher-tabs">
             <button class="tab-btn active" onclick="showCipher('vigenere', this)">Vigenere</button>
             <button class="tab-btn" onclick="showCipher('affine', this)">Affine</button>
@@ -384,9 +353,6 @@
 
         <div class="panel">
 
-            <!-- =============================================
-         1. VIGENERE CIPHER
-    ============================================= -->
             <div id="vigenere" class="cipher-section active">
                 <div class="section-title">// Vigenere Cipher — 26 Alfabet</div>
                 <div class="info-row">
@@ -420,9 +386,6 @@
                 <div class="error" id="vig-err"></div>
             </div>
 
-            <!-- =============================================
-         2. AFFINE CIPHER
-    ============================================= -->
             <div id="affine" class="cipher-section">
                 <div class="section-title">// Affine Cipher</div>
                 <div class="info-row">
@@ -460,9 +423,6 @@
                 <div class="error" id="aff-err"></div>
             </div>
 
-            <!-- =============================================
-         3. PLAYFAIR CIPHER
-    ============================================= -->
             <div id="playfair" class="cipher-section">
                 <div class="section-title">// Playfair Cipher — 26 Alfabet (I=J)</div>
                 <div class="info-row">
@@ -503,9 +463,6 @@
                 <div class="error" id="pf-err"></div>
             </div>
 
-            <!-- =============================================
-         4. HILL CIPHER
-    ============================================= -->
             <div id="hill" class="cipher-section">
                 <div class="section-title">// Hill Cipher</div>
                 <div class="info-row">
@@ -546,9 +503,6 @@
                 <div class="error" id="hill-err"></div>
             </div>
 
-            <!-- =============================================
-         5. ENIGMA CIPHER
-    ============================================= -->
             <div id="enigma" class="cipher-section">
                 <div class="section-title">// Enigma Cipher (Simplified 3-Rotor)</div>
                 <div class="info-row">
@@ -590,8 +544,8 @@
                 <div class="error" id="en-err"></div>
             </div>
 
-        </div><!-- /panel -->
-    </div><!-- /container -->
+        </div>
+    </div>
 
     <footer style="text-align:center; padding: 32px 20px 40px; position:relative; z-index:1;">
         <div style="display:inline-block; border-top: 1.5px dashed #e8d5f5; padding-top: 16px;">
@@ -608,13 +562,7 @@
     </footer>
 
     <script>
-        /* =================================================
-           HELPER FUNCTIONS
-           ================================================= */
 
-        /**
-         * Tampilkan tab cipher yang dipilih, sembunyikan yang lain
-         */
         function showCipher(id, btn) {
             document.querySelectorAll('.cipher-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -622,9 +570,6 @@
             btn.classList.add('active');
         }
 
-        /**
-         * Reset semua input dan output pada satu section
-         */
         function clearSection(prefix) {
             ['input', 'key', 'a', 'b', 'enc', 'dec', 'err', 'out',
                 'r1', 'r2', 'r3', 'plug', 'key'].forEach(suffix => {
@@ -637,41 +582,23 @@
             if (err) err.textContent = '';
         }
 
-        /**
-         * Modulo yang selalu positif (untuk bilangan negatif sekalipun)
-         * Rumus: ((a % m) + m) % m
-         */
         function mod(a, m) {
             return ((a % m) + m) % m;
         }
 
-        /**
-         * Greatest Common Divisor (Algoritma Euclidean)
-         */
         function gcd(a, b) {
             return b === 0 ? a : gcd(b, a % b);
         }
 
-        /**
-         * Modular Multiplicative Inverse: cari x sehingga (a*x) % m = 1
-         * Digunakan untuk dekripsi Affine dan Hill Cipher
-         */
         function modInverse(a, m) {
             a = mod(a, m);
             for (let x = 1; x < m; x++) {
                 if ((a * x) % m === 1) return x;
             }
-            return -1; // tidak ada invers (a tidak koprima dengan m)
+            return -1; 
         }
 
 
-        /* =================================================
-           1. VIGENERE CIPHER
-           Rumus Enkripsi : C = (P + K) mod 26
-           Rumus Dekripsi : P = (C - K + 26) mod 26
-           P = nilai huruf plaintext (A=0 ... Z=25)
-           K = nilai huruf kunci
-           ================================================= */
         function vigenereRun(mode) {
             // Bersihkan error
             document.getElementById('vig-err').textContent = '';
@@ -681,7 +608,6 @@
                 .toUpperCase()
                 .replace(/[^A-Z]/g, '');
 
-            // Validasi input
             if (!key) {
                 document.getElementById('vig-err').textContent = 'Error: Kunci tidak boleh kosong.';
                 return;
@@ -692,13 +618,12 @@
             }
 
             let result = '';
-            let ki = 0; // indeks kunci (hanya naik untuk huruf)
+            let ki = 0; 
 
             for (let i = 0; i < input.length; i++) {
                 const c = input.charCodeAt(i);
 
                 if (c >= 65 && c <= 90) {
-                    // Huruf KAPITAL
                     const shift = key.charCodeAt(ki % key.length) - 65;
                     if (mode === 'encrypt') {
                         result += String.fromCharCode((c - 65 + shift) % 26 + 65);
@@ -707,7 +632,6 @@
                     }
                     ki++;
                 } else if (c >= 97 && c <= 122) {
-                    // Huruf kecil
                     const shift = key.charCodeAt(ki % key.length) - 65;
                     if (mode === 'encrypt') {
                         result += String.fromCharCode((c - 97 + shift) % 26 + 97);
@@ -716,7 +640,6 @@
                     }
                     ki++;
                 } else {
-                    // Karakter bukan huruf (spasi, angka, dll) → tidak diubah
                     result += input[i];
                 }
             }
@@ -730,13 +653,6 @@
             }
         }
 
-
-        /* =================================================
-           2. AFFINE CIPHER
-           Rumus Enkripsi : C = (a * P + b) mod 26
-           Rumus Dekripsi : P = a_inv * (C - b) mod 26
-           Syarat: gcd(a, 26) = 1  (a harus koprima dengan 26)
-           ================================================= */
         function affineRun(mode) {
             document.getElementById('aff-err').textContent = '';
 
@@ -744,7 +660,6 @@
             const a = parseInt(document.getElementById('aff-a').value);
             const b = parseInt(document.getElementById('aff-b').value);
 
-            // Validasi: a harus koprima dengan 26
             if (gcd(a, 26) !== 1) {
                 document.getElementById('aff-err').textContent =
                     `Error: a=${a} tidak koprima dengan 26. Pilih: 1,3,5,7,9,11,15,17,19,21,23,25`;
@@ -755,7 +670,7 @@
                 return;
             }
 
-            const aInv = modInverse(a, 26); // invers dari a untuk dekripsi
+            const aInv = modInverse(a, 26); 
             let result = '';
 
             for (let i = 0; i < input.length; i++) {
@@ -788,18 +703,6 @@
         }
 
 
-        /* =================================================
-           3. PLAYFAIR CIPHER
-           - Buat matriks 5×5 dari kunci (I=J)
-           - Proses teks dua huruf sekaligus (digraf)
-           - Aturan: same row → geser kanan, same col → geser bawah
-                     berbeda → tukar kolom
-           ================================================= */
-
-        /**
-         * Bangun matriks 5×5 (25 huruf, I=J) berdasarkan kunci
-         * @returns array 25 karakter
-         */
         function buildPlayfairMatrix(key) {
             const ALPHABET = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'; // 25 huruf (tanpa J)
             const cleaned = (key.toUpperCase().replace(/J/g, 'I').replace(/[^A-Z]/g, '') + ALPHABET);
@@ -815,17 +718,11 @@
             return matrix; // panjang 25
         }
 
-        /**
-         * Cari posisi [baris, kolom] huruf dalam matriks Playfair
-         */
         function playfairPos(matrix, ch) {
             const idx = matrix.indexOf(ch === 'J' ? 'I' : ch);
             return [Math.floor(idx / 5), idx % 5];
         }
 
-        /**
-         * Preview matriks 5×5 ketika kunci diketik
-         */
         function previewPlayfairMatrix() {
             const key = document.getElementById('pf-key').value;
             const m = buildPlayfairMatrix(key);
@@ -858,41 +755,36 @@
             previewPlayfairMatrix();
 
             if (mode === 'encrypt') {
-                // --- Siapkan digraf: sisipkan X jika pasangan sama, padding X di akhir ---
                 let prepared = '';
                 let i = 0;
                 while (i < raw.length) {
                     prepared += raw[i];
                     if (i + 1 < raw.length) {
                         if (raw[i] === raw[i + 1]) {
-                            prepared += 'X'; // sisipkan X jika huruf sama
+                            prepared += 'X'; 
                             i++;
                         } else {
                             prepared += raw[i + 1];
                             i += 2;
                         }
                     } else {
-                        prepared += 'X'; // padding jika ganjil
+                        prepared += 'X'; 
                         i++;
                     }
                 }
 
-                // Enkripsi tiap pasangan huruf
                 let result = '';
                 for (let j = 0; j < prepared.length; j += 2) {
                     const [r1, c1] = playfairPos(matrix, prepared[j]);
                     const [r2, c2] = playfairPos(matrix, prepared[j + 1]);
 
                     if (r1 === r2) {
-                        // Satu baris → geser kolom ke kanan
                         result += matrix[r1 * 5 + (c1 + 1) % 5];
                         result += matrix[r2 * 5 + (c2 + 1) % 5];
                     } else if (c1 === c2) {
-                        // Satu kolom → geser baris ke bawah
                         result += matrix[((r1 + 1) % 5) * 5 + c1];
                         result += matrix[((r2 + 1) % 5) * 5 + c2];
                     } else {
-                        // Rectangle → tukar kolom
                         result += matrix[r1 * 5 + c2];
                         result += matrix[r2 * 5 + c1];
                     }
@@ -901,7 +793,6 @@
                 document.getElementById('pf-dec').textContent = '—';
 
             } else {
-                // Dekripsi
                 if (raw.length % 2 !== 0) {
                     document.getElementById('pf-err').textContent = 'Error: Panjang ciphertext harus genap.';
                     return;
@@ -928,32 +819,17 @@
         }
 
 
-        /* =================================================
-           4. HILL CIPHER
-           Enkripsi : C = K * P  (mod 26), K = matriks kunci n×n
-           Dekripsi : P = K^-1 * C (mod 26)
-           ================================================= */
-
-        /**
-         * Perkalian matriks dengan vektor, hasil di-mod 26
-         * @param {number[][]} A - matriks n×n
-         * @param {number[]}   v - vektor n
-         * @returns {number[]} vektor hasil
-         */
         function matVecMul(A, v) {
             return A.map(row =>
                 mod(row.reduce((sum, a, j) => sum + a * v[j], 0), 26)
             );
         }
 
-        /**
-         * Hitung determinan matriks mod 26 (support 2×2 dan 3×3)
-         */
         function matDet(m) {
             if (m.length === 2) {
                 return mod(m[0][0] * m[1][1] - m[0][1] * m[1][0], 26);
             }
-            // Ekspansi kofaktor baris pertama untuk 3×3
+
             return mod(
                 m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
                 m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
@@ -962,24 +838,18 @@
             );
         }
 
-        /**
-         * Hitung invers matriks mod 26 (support 2×2 dan 3×3)
-         * @returns matriks invers, atau null jika tidak invertibel
-         */
         function matInvMod26(m) {
             const det = matDet(m);
             const detInv = modInverse(mod(det, 26), 26);
-            if (detInv === -1) return null; // tidak ada invers
+            if (detInv === -1) return null; 
 
             if (m.length === 2) {
-                // Invers 2×2: swap diagonal, negasi anti-diagonal, kali det^-1
                 return [
                     [mod(detInv * m[1][1], 26), mod(detInv * -m[0][1], 26)],
                     [mod(detInv * -m[1][0], 26), mod(detInv * m[0][0], 26)]
                 ];
             }
 
-            // Invers 3×3: hitung matriks adjugat lalu kali det^-1
             const adj = [
                 [
                     m[1][1] * m[2][2] - m[1][2] * m[2][1],
@@ -1001,15 +871,11 @@
             return adj.map(row => row.map(v => mod(detInv * v, 26)));
         }
 
-        /**
-         * Render input field untuk tiap baris matriks
-         */
         function updateHillInputs() {
             const n = parseInt(document.getElementById('hill-size').value);
             const cont = document.getElementById('hill-matrix-inputs');
             cont.innerHTML = '';
 
-            // Nilai default matriks (invertibel mod 26)
             const defaults = {
                 2: [[3, 3], [2, 5]],
                 3: [[6, 24, 1], [13, 16, 10], [20, 17, 15]]
@@ -1026,7 +892,6 @@
             }
         }
 
-        // Panggil saat halaman pertama kali dimuat
         updateHillInputs();
 
         function hillRun(mode) {
@@ -1034,7 +899,6 @@
 
             const n = parseInt(document.getElementById('hill-size').value);
 
-            // Baca matriks kunci dari input
             const keyMatrix = [];
             for (let r = 0; r < n; r++) {
                 const vals = document.getElementById(`hill-row-${r}`)
@@ -1056,7 +920,6 @@
                 return;
             }
 
-            // Cek apakah matriks bisa diinvers
             const det = matDet(keyMatrix);
             if (gcd(mod(det, 26), 26) !== 1) {
                 document.getElementById('hill-err').textContent =
@@ -1064,18 +927,15 @@
                 return;
             }
 
-            // Pilih matriks kerja: kunci untuk enkripsi, invers kunci untuk dekripsi
             const workMatrix = (mode === 'decrypt') ? matInvMod26(keyMatrix) : keyMatrix;
             if (!workMatrix) {
                 document.getElementById('hill-err').textContent = 'Error: Matriks tidak bisa diinvers.';
                 return;
             }
 
-            // Pad teks agar panjangnya kelipatan n
             let padded = text;
             while (padded.length % n !== 0) padded += 'X';
 
-            // Proses blok per n huruf
             let result = '';
             for (let i = 0; i < padded.length; i += n) {
                 const block = padded.slice(i, i + n).split('').map(ch => ch.charCodeAt(0) - 65);
@@ -1092,42 +952,17 @@
             }
         }
 
-
-        /* =================================================
-           5. ENIGMA CIPHER  (Simplified 3-Rotor)
-        
-           Menggunakan rotor dan reflektor Wehrmacht/Luftwaffe historis.
-           Sifat Enigma: simetris → enkripsi = dekripsi
-           (jika setting sama, output dari output = input awal)
-        
-           Urutan sinyal:
-           Keyboard → Plugboard → Rotor3 → Rotor2 → Rotor1
-                    → Reflector → Rotor1⁻¹ → Rotor2⁻¹ → Rotor3⁻¹
-                    → Plugboard → Lampu
-           ================================================= */
-
-        // Wiring rotor historis Wehrmacht/Luftwaffe (A=0 ... Z=25)
         const ROTORS = [
             { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' }, // Rotor I
             { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notch: 'E' }, // Rotor II
             { wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO', notch: 'V' }, // Rotor III
         ];
 
-        // Reflektor B (UKW-B)
         const REFLECTOR_B = 'YRUHQSLDPXNGOKMIEBFZCWVJAT';
 
-        /**
-         * Enkripsi SATU karakter melewati seluruh mekanisme Enigma
-         * @param {number} c       - nilai huruf (0-25)
-         * @param {number} p1,p2,p3 - posisi rotor I, II, III
-         * @param {Object} plugboard - map nomor→nomor dari plugboard
-         * @returns {number} karakter terenkripsi (0-25)
-         */
         function enigmaChar(c, p1, p2, p3, plugboard) {
-            // 1. Plugboard (maju)
             if (plugboard[c] !== undefined) c = plugboard[c];
 
-            // 2. Maju: Rotor III → Rotor II → Rotor I
             let s = c;
             s = ROTORS[2].wiring.charCodeAt(mod(s + p3, 26)) - 65;
             s = mod(s - p3, 26);
@@ -1138,10 +973,8 @@
             s = ROTORS[0].wiring.charCodeAt(s) - 65;
             s = mod(s - p1, 26);
 
-            // 3. Reflektor
             s = REFLECTOR_B.charCodeAt(s) - 65;
 
-            // 4. Mundur: Rotor I⁻¹ → Rotor II⁻¹ → Rotor III⁻¹
             s = mod(s + p1, 26);
             s = ROTORS[0].wiring.indexOf(String.fromCharCode(s + 65));
             s = mod(s - p1, 26);
@@ -1152,7 +985,6 @@
             s = ROTORS[2].wiring.indexOf(String.fromCharCode(s + 65));
             s = mod(s - p3, 26);
 
-            // 5. Plugboard (kembali)
             if (plugboard[s] !== undefined) s = plugboard[s];
 
             return s;
@@ -1169,7 +1001,6 @@
                 return;
             }
 
-            // Baca posisi awal rotor
             const r1ch = document.getElementById('en-r1').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
             const r2ch = document.getElementById('en-r2').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
             const r3ch = document.getElementById('en-r3').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
@@ -1178,7 +1009,6 @@
             let pos2 = r2ch.charCodeAt(0) - 65;
             let pos3 = r3ch.charCodeAt(0) - 65;
 
-            // Parse plugboard: pasangan huruf seperti "AB CD EF"
             const plugStr = document.getElementById('en-plug').value.toUpperCase().replace(/[^A-Z ]/g, '');
             const plugboard = {};
             plugStr.split(' ').forEach(pair => {
@@ -1188,16 +1018,13 @@
                 }
             });
 
-            // Enkripsi karakter demi karakter
             let result = '';
             for (let i = 0; i < input.length; i++) {
                 const c = input.charCodeAt(i) - 65;
 
-                // --- Stepping Mechanism (rotor berputar sebelum enkripsi) ---
                 const r3AtNotch = (ROTORS[2].notch.charCodeAt(0) - 65) === pos3;
                 const r2AtNotch = (ROTORS[1].notch.charCodeAt(0) - 65) === pos2;
 
-                // Double-stepping anomaly (sesuai mekanisme asli Enigma)
                 if (r2AtNotch) {
                     pos1 = mod(pos1 + 1, 26);
                     pos2 = mod(pos2 + 1, 26);
@@ -1206,7 +1033,6 @@
                     pos2 = mod(pos2 + 1, 26);
                 }
                 pos3 = mod(pos3 + 1, 26);
-                // -----------------------------------------------------------
 
                 const enc = enigmaChar(c, pos1, pos2, pos3, plugboard);
                 result += String.fromCharCode(enc + 65);
