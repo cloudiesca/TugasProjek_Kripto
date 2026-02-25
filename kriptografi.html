@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Kriptografi Klasik</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* =============================================
+       VARIABEL WARNA & TEMA
+    ============================================= */
+        :root {
+            --bg: #fdf6ff;
+            --panel: #ffffff;
+            --border: #e8d5f5;
+            --accent: #c084fc;
+            --accent2: #86efac;
+            --accent3: #fda4af;
+            --text: #4a3f5c;
+            --text-dim: #a78bca;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Latar blob pastel dekoratif */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            top: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            bottom: -100px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(134, 239, 172, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* =============================================
+       HEADER
+    ============================================= */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-tag {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--accent);
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+            opacity: 0.7;
+        }
+
+        h1 {
+            font-size: clamp(28px, 5vw, 52px);
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #c084fc 0%, #f472b6 50%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* =============================================
+       TAB NAVIGASI
+    ============================================= */
+        .cipher-tabs {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: none;
+            color: var(--text-dim);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--accent);
+            border-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: #9333ea;
+            border-color: var(--border);
+            border-bottom-color: var(--panel);
+            background: var(--panel);
+            box-shadow: 0 -4px 16px rgba(192, 132, 252, 0.15);
+        }
+
+        /* =============================================
+       PANEL KONTEN
+    ============================================= */
+        .panel {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 12px 12px 12px;
+            padding: 28px;
+            box-shadow: 0 8px 32px rgba(192, 132, 252, 0.08);
+        }
+
+        .cipher-section {
+            display: none;
+        }
+
+        .cipher-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-family: 'DM Mono', monospace;
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1.5px dashed var(--border);
+        }
+
+        /* =============================================
+       FORM INPUT
+    ============================================= */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        input,
+        textarea,
+        select {
+            background: #faf5ff;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* =============================================
+       TOMBOL AKSI
+    ============================================= */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 24px;
+            border: 1px solid;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .btn-encrypt {
+            background: rgba(192, 132, 252, 0.12);
+            border-color: #c084fc;
+            color: #9333ea;
+        }
+
+        .btn-encrypt:hover {
+            background: rgba(192, 132, 252, 0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(192, 132, 252, 0.3);
+        }
+
+        .btn-decrypt {
+            background: rgba(134, 239, 172, 0.15);
+            border-color: #6ee7b7;
+            color: #059669;
+        }
+
+        .btn-decrypt:hover {
+            background: rgba(134, 239, 172, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(134, 239, 172, 0.3);
+        }
+
+        .btn-clear {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-dim);
+        }
+
+        .btn-clear:hover {
+            border-color: #fda4af;
+            color: #e11d48;
+            background: rgba(253, 164, 175, 0.1);
+        }
+
+        /* =============================================
+       KOTAK OUTPUT HASIL
+    ============================================= */
+        .output-box {
+            background: #faf5ff;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .output-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .output-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15px;
+            color: #059669;
+            word-break: break-all;
+            min-height: 40px;
+            line-height: 1.6;
+        }
+
+        .output-text.encrypt-result {
+            color: #9333ea;
+        }
+
+        /* =============================================
+       PESAN ERROR
+    ============================================= */
+        .error {
+            color: #e11d48;
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        /* Badge info */
+        .info-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: rgba(192, 132, 252, 0.1);
+            border: 1.5px solid rgba(192, 132, 252, 0.25);
+            border-radius: 100px;
+            padding: 3px 14px;
+            font-size: 11px;
+            color: #9333ea;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- =============================================
+       HEADER
+  ============================================= -->
+        <header>
+            <h1>Kriptografi Klasik</h1>
+            <div class="subtitle">Enkripsi &amp; Dekripsi · Web Based Calculator</div>
+        </header>
+
+        <!-- =============================================
+       TAB NAVIGASI
+  ============================================= -->
+        <div class="cipher-tabs">
+            <button class="tab-btn active" onclick="showCipher('vigenere', this)">Vigenere</button>
+            <button class="tab-btn" onclick="showCipher('affine', this)">Affine</button>
+            <button class="tab-btn" onclick="showCipher('playfair', this)">Playfair</button>
+            <button class="tab-btn" onclick="showCipher('hill', this)">Hill</button>
+            <button class="tab-btn" onclick="showCipher('enigma', this)">Enigma</button>
+        </div>
+
+        <div class="panel">
+
+            <!-- =============================================
+         1. VIGENERE CIPHER
+    ============================================= -->
+            <div id="vigenere" class="cipher-section active">
+                <div class="section-title">// Vigenere Cipher — 26 Alfabet</div>
+                <div class="info-row">
+                    <span class="badge">Polyalphabetic</span>
+                    <span class="badge">Key: Kata / Kalimat</span>
+                    <span class="badge">C = (P + K) mod 26</span>
+                </div>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label>Plaintext / Ciphertext</label>
+                        <textarea id="vig-input" placeholder="Masukkan teks di sini..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Kunci (Key)</label>
+                        <input id="vig-key" type="text" placeholder="Contoh: KUNCI" />
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-encrypt" onclick="vigenereRun('encrypt')">⬡ Enkripsi</button>
+                    <button class="btn btn-decrypt" onclick="vigenereRun('decrypt')">⬡ Dekripsi</button>
+                    <button class="btn btn-clear" onclick="clearSection('vig')">✕ Reset</button>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Enkripsi</div>
+                    <div class="output-text encrypt-result" id="vig-enc">—</div>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Dekripsi</div>
+                    <div class="output-text" id="vig-dec">—</div>
+                </div>
+                <div class="error" id="vig-err"></div>
+            </div>
+
+            <!-- =============================================
+         2. AFFINE CIPHER
+    ============================================= -->
+            <div id="affine" class="cipher-section">
+                <div class="section-title">// Affine Cipher</div>
+                <div class="info-row">
+                    <span class="badge">Monoalphabetic</span>
+                    <span class="badge">C = (a·P + b) mod 26</span>
+                    <span class="badge">a harus koprima dengan 26</span>
+                </div>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label>Plaintext / Ciphertext</label>
+                        <textarea id="aff-input" placeholder="Masukkan teks di sini..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Kunci a (harus koprima 26: 1,3,5,7,9,11,15,17,19,21,23,25)</label>
+                        <input id="aff-a" type="number" value="5" min="1" max="25" />
+                    </div>
+                    <div class="field">
+                        <label>Kunci b (0–25)</label>
+                        <input id="aff-b" type="number" value="8" min="0" max="25" />
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-encrypt" onclick="affineRun('encrypt')">⬡ Enkripsi</button>
+                    <button class="btn btn-decrypt" onclick="affineRun('decrypt')">⬡ Dekripsi</button>
+                    <button class="btn btn-clear" onclick="clearSection('aff')">✕ Reset</button>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Enkripsi</div>
+                    <div class="output-text encrypt-result" id="aff-enc">—</div>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Dekripsi</div>
+                    <div class="output-text" id="aff-dec">—</div>
+                </div>
+                <div class="error" id="aff-err"></div>
+            </div>
+
+            <!-- =============================================
+         3. PLAYFAIR CIPHER
+    ============================================= -->
+            <div id="playfair" class="cipher-section">
+                <div class="section-title">// Playfair Cipher — 26 Alfabet (I=J)</div>
+                <div class="info-row">
+                    <span class="badge">Digraph Substitution</span>
+                    <span class="badge">Matriks 5×5</span>
+                    <span class="badge">I = J</span>
+                </div>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label>Plaintext / Ciphertext</label>
+                        <textarea id="pf-input" placeholder="Masukkan teks di sini..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Kunci (Key)</label>
+                        <input id="pf-key" type="text" placeholder="Contoh: MONARCHY"
+                            oninput="previewPlayfairMatrix()" />
+                    </div>
+                    <div class="field">
+                        <label>Preview Matriks 5×5</label>
+                        <pre id="pf-matrix"
+                            style="font-family:'Share Tech Mono',monospace;font-size:14px;
+                      color:#9333ea;line-height:1.9;letter-spacing:5px;white-space:pre;background:transparent;border:none;padding:0;margin:0;">—</pre>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-encrypt" onclick="playfairRun('encrypt')">⬡ Enkripsi</button>
+                    <button class="btn btn-decrypt" onclick="playfairRun('decrypt')">⬡ Dekripsi</button>
+                    <button class="btn btn-clear" onclick="clearSection('pf')">✕ Reset</button>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Enkripsi</div>
+                    <div class="output-text encrypt-result" id="pf-enc">—</div>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Dekripsi</div>
+                    <div class="output-text" id="pf-dec">—</div>
+                </div>
+                <div class="error" id="pf-err"></div>
+            </div>
+
+            <!-- =============================================
+         4. HILL CIPHER
+    ============================================= -->
+            <div id="hill" class="cipher-section">
+                <div class="section-title">// Hill Cipher</div>
+                <div class="info-row">
+                    <span class="badge">Matrix Multiplication</span>
+                    <span class="badge">C = K·P mod 26</span>
+                    <span class="badge">Key: Matriks n×n</span>
+                </div>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label>Plaintext / Ciphertext (huruf saja)</label>
+                        <textarea id="hill-input" placeholder="Masukkan teks di sini..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Ukuran Matriks Kunci</label>
+                        <select id="hill-size" onchange="updateHillInputs()">
+                            <option value="2">2×2</option>
+                            <option value="3">3×3</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Isi Matriks (tiap baris pisah koma)</label>
+                        <div id="hill-matrix-inputs"></div>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-encrypt" onclick="hillRun('encrypt')">⬡ Enkripsi</button>
+                    <button class="btn btn-decrypt" onclick="hillRun('decrypt')">⬡ Dekripsi</button>
+                    <button class="btn btn-clear" onclick="clearSection('hill')">✕ Reset</button>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Enkripsi</div>
+                    <div class="output-text encrypt-result" id="hill-enc">—</div>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil Dekripsi</div>
+                    <div class="output-text" id="hill-dec">—</div>
+                </div>
+                <div class="error" id="hill-err"></div>
+            </div>
+
+            <!-- =============================================
+         5. ENIGMA CIPHER
+    ============================================= -->
+            <div id="enigma" class="cipher-section">
+                <div class="section-title">// Enigma Cipher (Simplified 3-Rotor)</div>
+                <div class="info-row">
+                    <span class="badge">3 Rotor Historis</span>
+                    <span class="badge">Reflector-B</span>
+                    <span class="badge">Plugboard</span>
+                    <span class="badge">Simetris</span>
+                </div>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label>Plaintext / Ciphertext (Enigma bersifat simetris)</label>
+                        <textarea id="en-input" placeholder="Masukkan teks di sini..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Posisi Rotor I (A–Z)</label>
+                        <input id="en-r1" type="text" maxlength="1" value="A" style="text-transform:uppercase" />
+                    </div>
+                    <div class="field">
+                        <label>Posisi Rotor II (A–Z)</label>
+                        <input id="en-r2" type="text" maxlength="1" value="A" style="text-transform:uppercase" />
+                    </div>
+                    <div class="field">
+                        <label>Posisi Rotor III (A–Z)</label>
+                        <input id="en-r3" type="text" maxlength="1" value="A" style="text-transform:uppercase" />
+                    </div>
+                    <div class="field">
+                        <label>Plugboard (pasang huruf, contoh: AB CD EF)</label>
+                        <input id="en-plug" type="text" placeholder="AB CD EF GH" style="text-transform:uppercase" />
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-encrypt" onclick="enigmaRun()">⬡ Enkripsi / Dekripsi</button>
+                    <button class="btn btn-clear" onclick="clearSection('en')">✕ Reset</button>
+                </div>
+                <div class="output-box">
+                    <div class="output-label">Hasil (Enkripsi = Dekripsi dengan setting yang sama)</div>
+                    <div class="output-text encrypt-result" id="en-out">—</div>
+                </div>
+                <div class="error" id="en-err"></div>
+            </div>
+
+        </div><!-- /panel -->
+    </div><!-- /container -->
+
+    <footer style="text-align:center; padding: 32px 20px 40px; position:relative; z-index:1;">
+        <div style="display:inline-block; border-top: 1.5px dashed #e8d5f5; padding-top: 16px;">
+            <div
+                style="font-family:'Share Tech Mono',monospace; color:#a78bca; font-size:12px; letter-spacing:3px; margin-bottom:4px;">
+                DIBUAT OLEH</div>
+            <div
+                style="font-family:'Nunito',sans-serif; font-weight:700; font-size:14px; color:#9333ea; letter-spacing:1px;">
+                Desca Rahma Kholisa</div>
+            <div
+                style="font-family:'Share Tech Mono',monospace; color:#a78bca; font-size:13px; letter-spacing:2px; margin-top:4px;">
+                21130123130071</div>
+        </div>
+    </footer>
+
+    <script>
+        /* =================================================
+           HELPER FUNCTIONS
+           ================================================= */
+
+        /**
+         * Tampilkan tab cipher yang dipilih, sembunyikan yang lain
+         */
+        function showCipher(id, btn) {
+            document.querySelectorAll('.cipher-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        /**
+         * Reset semua input dan output pada satu section
+         */
+        function clearSection(prefix) {
+            ['input', 'key', 'a', 'b', 'enc', 'dec', 'err', 'out',
+                'r1', 'r2', 'r3', 'plug', 'key'].forEach(suffix => {
+                    const el = document.getElementById(prefix + '-' + suffix);
+                    if (!el) return;
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.value = '';
+                    else el.textContent = '—';
+                });
+            const err = document.getElementById(prefix + '-err');
+            if (err) err.textContent = '';
+        }
+
+        /**
+         * Modulo yang selalu positif (untuk bilangan negatif sekalipun)
+         * Rumus: ((a % m) + m) % m
+         */
+        function mod(a, m) {
+            return ((a % m) + m) % m;
+        }
+
+        /**
+         * Greatest Common Divisor (Algoritma Euclidean)
+         */
+        function gcd(a, b) {
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        /**
+         * Modular Multiplicative Inverse: cari x sehingga (a*x) % m = 1
+         * Digunakan untuk dekripsi Affine dan Hill Cipher
+         */
+        function modInverse(a, m) {
+            a = mod(a, m);
+            for (let x = 1; x < m; x++) {
+                if ((a * x) % m === 1) return x;
+            }
+            return -1; // tidak ada invers (a tidak koprima dengan m)
+        }
+
+
+        /* =================================================
+           1. VIGENERE CIPHER
+           Rumus Enkripsi : C = (P + K) mod 26
+           Rumus Dekripsi : P = (C - K + 26) mod 26
+           P = nilai huruf plaintext (A=0 ... Z=25)
+           K = nilai huruf kunci
+           ================================================= */
+        function vigenereRun(mode) {
+            // Bersihkan error
+            document.getElementById('vig-err').textContent = '';
+
+            const input = document.getElementById('vig-input').value;
+            const key = document.getElementById('vig-key').value
+                .toUpperCase()
+                .replace(/[^A-Z]/g, '');
+
+            // Validasi input
+            if (!key) {
+                document.getElementById('vig-err').textContent = 'Error: Kunci tidak boleh kosong.';
+                return;
+            }
+            if (!input.trim()) {
+                document.getElementById('vig-err').textContent = 'Error: Teks tidak boleh kosong.';
+                return;
+            }
+
+            let result = '';
+            let ki = 0; // indeks kunci (hanya naik untuk huruf)
+
+            for (let i = 0; i < input.length; i++) {
+                const c = input.charCodeAt(i);
+
+                if (c >= 65 && c <= 90) {
+                    // Huruf KAPITAL
+                    const shift = key.charCodeAt(ki % key.length) - 65;
+                    if (mode === 'encrypt') {
+                        result += String.fromCharCode((c - 65 + shift) % 26 + 65);
+                    } else {
+                        result += String.fromCharCode(mod(c - 65 - shift, 26) + 65);
+                    }
+                    ki++;
+                } else if (c >= 97 && c <= 122) {
+                    // Huruf kecil
+                    const shift = key.charCodeAt(ki % key.length) - 65;
+                    if (mode === 'encrypt') {
+                        result += String.fromCharCode((c - 97 + shift) % 26 + 97);
+                    } else {
+                        result += String.fromCharCode(mod(c - 97 - shift, 26) + 97);
+                    }
+                    ki++;
+                } else {
+                    // Karakter bukan huruf (spasi, angka, dll) → tidak diubah
+                    result += input[i];
+                }
+            }
+
+            if (mode === 'encrypt') {
+                document.getElementById('vig-enc').textContent = result;
+                document.getElementById('vig-dec').textContent = '—';
+            } else {
+                document.getElementById('vig-dec').textContent = result;
+                document.getElementById('vig-enc').textContent = '—';
+            }
+        }
+
+
+        /* =================================================
+           2. AFFINE CIPHER
+           Rumus Enkripsi : C = (a * P + b) mod 26
+           Rumus Dekripsi : P = a_inv * (C - b) mod 26
+           Syarat: gcd(a, 26) = 1  (a harus koprima dengan 26)
+           ================================================= */
+        function affineRun(mode) {
+            document.getElementById('aff-err').textContent = '';
+
+            const input = document.getElementById('aff-input').value;
+            const a = parseInt(document.getElementById('aff-a').value);
+            const b = parseInt(document.getElementById('aff-b').value);
+
+            // Validasi: a harus koprima dengan 26
+            if (gcd(a, 26) !== 1) {
+                document.getElementById('aff-err').textContent =
+                    `Error: a=${a} tidak koprima dengan 26. Pilih: 1,3,5,7,9,11,15,17,19,21,23,25`;
+                return;
+            }
+            if (!input.trim()) {
+                document.getElementById('aff-err').textContent = 'Error: Teks tidak boleh kosong.';
+                return;
+            }
+
+            const aInv = modInverse(a, 26); // invers dari a untuk dekripsi
+            let result = '';
+
+            for (let i = 0; i < input.length; i++) {
+                const c = input.charCodeAt(i);
+
+                if (c >= 65 && c <= 90) {
+                    if (mode === 'encrypt') {
+                        result += String.fromCharCode(mod(a * (c - 65) + b, 26) + 65);
+                    } else {
+                        result += String.fromCharCode(mod(aInv * (c - 65 - b), 26) + 65);
+                    }
+                } else if (c >= 97 && c <= 122) {
+                    if (mode === 'encrypt') {
+                        result += String.fromCharCode(mod(a * (c - 97) + b, 26) + 97);
+                    } else {
+                        result += String.fromCharCode(mod(aInv * (c - 97 - b), 26) + 97);
+                    }
+                } else {
+                    result += input[i];
+                }
+            }
+
+            if (mode === 'encrypt') {
+                document.getElementById('aff-enc').textContent = result;
+                document.getElementById('aff-dec').textContent = '—';
+            } else {
+                document.getElementById('aff-dec').textContent = result;
+                document.getElementById('aff-enc').textContent = '—';
+            }
+        }
+
+
+        /* =================================================
+           3. PLAYFAIR CIPHER
+           - Buat matriks 5×5 dari kunci (I=J)
+           - Proses teks dua huruf sekaligus (digraf)
+           - Aturan: same row → geser kanan, same col → geser bawah
+                     berbeda → tukar kolom
+           ================================================= */
+
+        /**
+         * Bangun matriks 5×5 (25 huruf, I=J) berdasarkan kunci
+         * @returns array 25 karakter
+         */
+        function buildPlayfairMatrix(key) {
+            const ALPHABET = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'; // 25 huruf (tanpa J)
+            const cleaned = (key.toUpperCase().replace(/J/g, 'I').replace(/[^A-Z]/g, '') + ALPHABET);
+            const seen = new Set();
+            const matrix = [];
+
+            for (const ch of cleaned) {
+                if (!seen.has(ch)) {
+                    seen.add(ch);
+                    matrix.push(ch);
+                }
+            }
+            return matrix; // panjang 25
+        }
+
+        /**
+         * Cari posisi [baris, kolom] huruf dalam matriks Playfair
+         */
+        function playfairPos(matrix, ch) {
+            const idx = matrix.indexOf(ch === 'J' ? 'I' : ch);
+            return [Math.floor(idx / 5), idx % 5];
+        }
+
+        /**
+         * Preview matriks 5×5 ketika kunci diketik
+         */
+        function previewPlayfairMatrix() {
+            const key = document.getElementById('pf-key').value;
+            const m = buildPlayfairMatrix(key);
+            let display = '';
+            for (let r = 0; r < 5; r++) {
+                display += m.slice(r * 5, r * 5 + 5).join(' ') + '\n';
+            }
+            document.getElementById('pf-matrix').textContent = display;
+        }
+
+        function playfairRun(mode) {
+            document.getElementById('pf-err').textContent = '';
+
+            const key = document.getElementById('pf-key').value;
+            if (!key.trim()) {
+                document.getElementById('pf-err').textContent = 'Error: Kunci tidak boleh kosong.';
+                return;
+            }
+
+            const raw = document.getElementById('pf-input').value
+                .toUpperCase()
+                .replace(/J/g, 'I')
+                .replace(/[^A-Z]/g, '');
+            if (!raw) {
+                document.getElementById('pf-err').textContent = 'Error: Teks tidak boleh kosong.';
+                return;
+            }
+
+            const matrix = buildPlayfairMatrix(key);
+            previewPlayfairMatrix();
+
+            if (mode === 'encrypt') {
+                // --- Siapkan digraf: sisipkan X jika pasangan sama, padding X di akhir ---
+                let prepared = '';
+                let i = 0;
+                while (i < raw.length) {
+                    prepared += raw[i];
+                    if (i + 1 < raw.length) {
+                        if (raw[i] === raw[i + 1]) {
+                            prepared += 'X'; // sisipkan X jika huruf sama
+                            i++;
+                        } else {
+                            prepared += raw[i + 1];
+                            i += 2;
+                        }
+                    } else {
+                        prepared += 'X'; // padding jika ganjil
+                        i++;
+                    }
+                }
+
+                // Enkripsi tiap pasangan huruf
+                let result = '';
+                for (let j = 0; j < prepared.length; j += 2) {
+                    const [r1, c1] = playfairPos(matrix, prepared[j]);
+                    const [r2, c2] = playfairPos(matrix, prepared[j + 1]);
+
+                    if (r1 === r2) {
+                        // Satu baris → geser kolom ke kanan
+                        result += matrix[r1 * 5 + (c1 + 1) % 5];
+                        result += matrix[r2 * 5 + (c2 + 1) % 5];
+                    } else if (c1 === c2) {
+                        // Satu kolom → geser baris ke bawah
+                        result += matrix[((r1 + 1) % 5) * 5 + c1];
+                        result += matrix[((r2 + 1) % 5) * 5 + c2];
+                    } else {
+                        // Rectangle → tukar kolom
+                        result += matrix[r1 * 5 + c2];
+                        result += matrix[r2 * 5 + c1];
+                    }
+                }
+                document.getElementById('pf-enc').textContent = result;
+                document.getElementById('pf-dec').textContent = '—';
+
+            } else {
+                // Dekripsi
+                if (raw.length % 2 !== 0) {
+                    document.getElementById('pf-err').textContent = 'Error: Panjang ciphertext harus genap.';
+                    return;
+                }
+                let result = '';
+                for (let j = 0; j < raw.length; j += 2) {
+                    const [r1, c1] = playfairPos(matrix, raw[j]);
+                    const [r2, c2] = playfairPos(matrix, raw[j + 1]);
+
+                    if (r1 === r2) {
+                        result += matrix[r1 * 5 + mod(c1 - 1, 5)];
+                        result += matrix[r2 * 5 + mod(c2 - 1, 5)];
+                    } else if (c1 === c2) {
+                        result += matrix[mod(r1 - 1, 5) * 5 + c1];
+                        result += matrix[mod(r2 - 1, 5) * 5 + c2];
+                    } else {
+                        result += matrix[r1 * 5 + c2];
+                        result += matrix[r2 * 5 + c1];
+                    }
+                }
+                document.getElementById('pf-dec').textContent = result.replace(/X+$/, '');
+                document.getElementById('pf-enc').textContent = '—';
+            }
+        }
+
+
+        /* =================================================
+           4. HILL CIPHER
+           Enkripsi : C = K * P  (mod 26), K = matriks kunci n×n
+           Dekripsi : P = K^-1 * C (mod 26)
+           ================================================= */
+
+        /**
+         * Perkalian matriks dengan vektor, hasil di-mod 26
+         * @param {number[][]} A - matriks n×n
+         * @param {number[]}   v - vektor n
+         * @returns {number[]} vektor hasil
+         */
+        function matVecMul(A, v) {
+            return A.map(row =>
+                mod(row.reduce((sum, a, j) => sum + a * v[j], 0), 26)
+            );
+        }
+
+        /**
+         * Hitung determinan matriks mod 26 (support 2×2 dan 3×3)
+         */
+        function matDet(m) {
+            if (m.length === 2) {
+                return mod(m[0][0] * m[1][1] - m[0][1] * m[1][0], 26);
+            }
+            // Ekspansi kofaktor baris pertama untuk 3×3
+            return mod(
+                m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+                m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+                m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]),
+                26
+            );
+        }
+
+        /**
+         * Hitung invers matriks mod 26 (support 2×2 dan 3×3)
+         * @returns matriks invers, atau null jika tidak invertibel
+         */
+        function matInvMod26(m) {
+            const det = matDet(m);
+            const detInv = modInverse(mod(det, 26), 26);
+            if (detInv === -1) return null; // tidak ada invers
+
+            if (m.length === 2) {
+                // Invers 2×2: swap diagonal, negasi anti-diagonal, kali det^-1
+                return [
+                    [mod(detInv * m[1][1], 26), mod(detInv * -m[0][1], 26)],
+                    [mod(detInv * -m[1][0], 26), mod(detInv * m[0][0], 26)]
+                ];
+            }
+
+            // Invers 3×3: hitung matriks adjugat lalu kali det^-1
+            const adj = [
+                [
+                    m[1][1] * m[2][2] - m[1][2] * m[2][1],
+                    -(m[0][1] * m[2][2] - m[0][2] * m[2][1]),
+                    m[0][1] * m[1][2] - m[0][2] * m[1][1]
+                ],
+                [
+                    -(m[1][0] * m[2][2] - m[1][2] * m[2][0]),
+                    m[0][0] * m[2][2] - m[0][2] * m[2][0],
+                    -(m[0][0] * m[1][2] - m[0][2] * m[1][0])
+                ],
+                [
+                    m[1][0] * m[2][1] - m[1][1] * m[2][0],
+                    -(m[0][0] * m[2][1] - m[0][1] * m[2][0]),
+                    m[0][0] * m[1][1] - m[0][1] * m[1][0]
+                ]
+            ];
+
+            return adj.map(row => row.map(v => mod(detInv * v, 26)));
+        }
+
+        /**
+         * Render input field untuk tiap baris matriks
+         */
+        function updateHillInputs() {
+            const n = parseInt(document.getElementById('hill-size').value);
+            const cont = document.getElementById('hill-matrix-inputs');
+            cont.innerHTML = '';
+
+            // Nilai default matriks (invertibel mod 26)
+            const defaults = {
+                2: [[3, 3], [2, 5]],
+                3: [[6, 24, 1], [13, 16, 10], [20, 17, 15]]
+            };
+
+            for (let r = 0; r < n; r++) {
+                const inp = document.createElement('input');
+                inp.type = 'text';
+                inp.id = `hill-row-${r}`;
+                inp.value = defaults[n][r].join(',');
+                inp.placeholder = `Baris ${r + 1}: ${Array(n).fill(0).join(',')}`;
+                inp.style.marginBottom = '6px';
+                cont.appendChild(inp);
+            }
+        }
+
+        // Panggil saat halaman pertama kali dimuat
+        updateHillInputs();
+
+        function hillRun(mode) {
+            document.getElementById('hill-err').textContent = '';
+
+            const n = parseInt(document.getElementById('hill-size').value);
+
+            // Baca matriks kunci dari input
+            const keyMatrix = [];
+            for (let r = 0; r < n; r++) {
+                const vals = document.getElementById(`hill-row-${r}`)
+                    .value.split(',')
+                    .map(v => parseInt(v.trim()));
+                if (vals.length !== n || vals.some(isNaN)) {
+                    document.getElementById('hill-err').textContent =
+                        `Error: Baris ${r + 1} harus memiliki ${n} angka dipisah koma.`;
+                    return;
+                }
+                keyMatrix.push(vals);
+            }
+
+            const text = document.getElementById('hill-input').value
+                .toUpperCase()
+                .replace(/[^A-Z]/g, '');
+            if (!text) {
+                document.getElementById('hill-err').textContent = 'Error: Teks tidak boleh kosong.';
+                return;
+            }
+
+            // Cek apakah matriks bisa diinvers
+            const det = matDet(keyMatrix);
+            if (gcd(mod(det, 26), 26) !== 1) {
+                document.getElementById('hill-err').textContent =
+                    `Error: Matriks tidak invertibel (det=${det} tidak koprima dengan 26). Ganti matriks kunci.`;
+                return;
+            }
+
+            // Pilih matriks kerja: kunci untuk enkripsi, invers kunci untuk dekripsi
+            const workMatrix = (mode === 'decrypt') ? matInvMod26(keyMatrix) : keyMatrix;
+            if (!workMatrix) {
+                document.getElementById('hill-err').textContent = 'Error: Matriks tidak bisa diinvers.';
+                return;
+            }
+
+            // Pad teks agar panjangnya kelipatan n
+            let padded = text;
+            while (padded.length % n !== 0) padded += 'X';
+
+            // Proses blok per n huruf
+            let result = '';
+            for (let i = 0; i < padded.length; i += n) {
+                const block = padded.slice(i, i + n).split('').map(ch => ch.charCodeAt(0) - 65);
+                const enc = matVecMul(workMatrix, block);
+                result += enc.map(v => String.fromCharCode(v + 65)).join('');
+            }
+
+            if (mode === 'encrypt') {
+                document.getElementById('hill-enc').textContent = result;
+                document.getElementById('hill-dec').textContent = '—';
+            } else {
+                document.getElementById('hill-dec').textContent = result.replace(/X+$/, '');
+                document.getElementById('hill-enc').textContent = '—';
+            }
+        }
+
+
+        /* =================================================
+           5. ENIGMA CIPHER  (Simplified 3-Rotor)
+        
+           Menggunakan rotor dan reflektor Wehrmacht/Luftwaffe historis.
+           Sifat Enigma: simetris → enkripsi = dekripsi
+           (jika setting sama, output dari output = input awal)
+        
+           Urutan sinyal:
+           Keyboard → Plugboard → Rotor3 → Rotor2 → Rotor1
+                    → Reflector → Rotor1⁻¹ → Rotor2⁻¹ → Rotor3⁻¹
+                    → Plugboard → Lampu
+           ================================================= */
+
+        // Wiring rotor historis Wehrmacht/Luftwaffe (A=0 ... Z=25)
+        const ROTORS = [
+            { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' }, // Rotor I
+            { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notch: 'E' }, // Rotor II
+            { wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO', notch: 'V' }, // Rotor III
+        ];
+
+        // Reflektor B (UKW-B)
+        const REFLECTOR_B = 'YRUHQSLDPXNGOKMIEBFZCWVJAT';
+
+        /**
+         * Enkripsi SATU karakter melewati seluruh mekanisme Enigma
+         * @param {number} c       - nilai huruf (0-25)
+         * @param {number} p1,p2,p3 - posisi rotor I, II, III
+         * @param {Object} plugboard - map nomor→nomor dari plugboard
+         * @returns {number} karakter terenkripsi (0-25)
+         */
+        function enigmaChar(c, p1, p2, p3, plugboard) {
+            // 1. Plugboard (maju)
+            if (plugboard[c] !== undefined) c = plugboard[c];
+
+            // 2. Maju: Rotor III → Rotor II → Rotor I
+            let s = c;
+            s = ROTORS[2].wiring.charCodeAt(mod(s + p3, 26)) - 65;
+            s = mod(s - p3, 26);
+            s = mod(s + p2, 26);
+            s = ROTORS[1].wiring.charCodeAt(s) - 65;
+            s = mod(s - p2, 26);
+            s = mod(s + p1, 26);
+            s = ROTORS[0].wiring.charCodeAt(s) - 65;
+            s = mod(s - p1, 26);
+
+            // 3. Reflektor
+            s = REFLECTOR_B.charCodeAt(s) - 65;
+
+            // 4. Mundur: Rotor I⁻¹ → Rotor II⁻¹ → Rotor III⁻¹
+            s = mod(s + p1, 26);
+            s = ROTORS[0].wiring.indexOf(String.fromCharCode(s + 65));
+            s = mod(s - p1, 26);
+            s = mod(s + p2, 26);
+            s = ROTORS[1].wiring.indexOf(String.fromCharCode(s + 65));
+            s = mod(s - p2, 26);
+            s = mod(s + p3, 26);
+            s = ROTORS[2].wiring.indexOf(String.fromCharCode(s + 65));
+            s = mod(s - p3, 26);
+
+            // 5. Plugboard (kembali)
+            if (plugboard[s] !== undefined) s = plugboard[s];
+
+            return s;
+        }
+
+        function enigmaRun() {
+            document.getElementById('en-err').textContent = '';
+
+            const input = document.getElementById('en-input').value
+                .toUpperCase()
+                .replace(/[^A-Z]/g, '');
+            if (!input) {
+                document.getElementById('en-err').textContent = 'Error: Teks tidak boleh kosong.';
+                return;
+            }
+
+            // Baca posisi awal rotor
+            const r1ch = document.getElementById('en-r1').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
+            const r2ch = document.getElementById('en-r2').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
+            const r3ch = document.getElementById('en-r3').value.toUpperCase().replace(/[^A-Z]/, '')[0] || 'A';
+
+            let pos1 = r1ch.charCodeAt(0) - 65;
+            let pos2 = r2ch.charCodeAt(0) - 65;
+            let pos3 = r3ch.charCodeAt(0) - 65;
+
+            // Parse plugboard: pasangan huruf seperti "AB CD EF"
+            const plugStr = document.getElementById('en-plug').value.toUpperCase().replace(/[^A-Z ]/g, '');
+            const plugboard = {};
+            plugStr.split(' ').forEach(pair => {
+                if (pair.length === 2 && pair[0] !== pair[1]) {
+                    plugboard[pair.charCodeAt(0) - 65] = pair.charCodeAt(1) - 65;
+                    plugboard[pair.charCodeAt(1) - 65] = pair.charCodeAt(0) - 65;
+                }
+            });
+
+            // Enkripsi karakter demi karakter
+            let result = '';
+            for (let i = 0; i < input.length; i++) {
+                const c = input.charCodeAt(i) - 65;
+
+                // --- Stepping Mechanism (rotor berputar sebelum enkripsi) ---
+                const r3AtNotch = (ROTORS[2].notch.charCodeAt(0) - 65) === pos3;
+                const r2AtNotch = (ROTORS[1].notch.charCodeAt(0) - 65) === pos2;
+
+                // Double-stepping anomaly (sesuai mekanisme asli Enigma)
+                if (r2AtNotch) {
+                    pos1 = mod(pos1 + 1, 26);
+                    pos2 = mod(pos2 + 1, 26);
+                }
+                if (r3AtNotch) {
+                    pos2 = mod(pos2 + 1, 26);
+                }
+                pos3 = mod(pos3 + 1, 26);
+                // -----------------------------------------------------------
+
+                const enc = enigmaChar(c, pos1, pos2, pos3, plugboard);
+                result += String.fromCharCode(enc + 65);
+            }
+
+            document.getElementById('en-out').textContent = result;
+        }
+    </script>
+</body>
+
+</html>
